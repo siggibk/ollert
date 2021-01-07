@@ -41,7 +41,10 @@ namespace OllertServer.WebApi
 
             // Database connection
             var connectionString = Configuration.GetConnectionString("OllertDb");
-            services.AddDbContext<PropertyContext>(options => options.UseNpgsql(connectionString));
+            services.AddDbContext<PropertyContext>(options => options.UseNpgsql(
+                connectionString,
+                x => x.MigrationsAssembly("OllertServer.Repositories")
+            ));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

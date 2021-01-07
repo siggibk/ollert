@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace OllertServer.Models.Entities
 {
-    public class Board
+    public class Column
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
 
         // foreign keys
-        public string UserId { get; set; }
+        public Guid BoardId { get; set; }
 
-        // navigation properties
-        public ApplicationUser User { get; set; }
-        public IList<Column> Columns { get; set; }
+        // navigation property
+        public Board Board { get; set; }
+        public IList<Task> Tasks { get; set; }
     }
 }
