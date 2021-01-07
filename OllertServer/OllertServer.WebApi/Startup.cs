@@ -11,8 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace OllertApi
+using OllertServer.Models.Entities;
+using OllertServer.Repositories;
+
+namespace OllertServer.WebApi
 {
     public class Startup
     {
@@ -28,10 +32,16 @@ namespace OllertApi
         {
 
             services.AddControllers();
+            services.AddEntityFrameworkNpgsql();
+
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OllertApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OllertServer.WebApi", Version = "v1" });
             });
+
+            // Database connection
+            var connectionString = Configuration.GetConnectionString("OllertDb");
+            services.AddDbContext<PropertyContext>(options => options.UseNpgsql(connectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,7 +51,7 @@ namespace OllertApi
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OllertApi v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OllertServer.WebApi v1"));
             }
 
             app.UseHttpsRedirection();

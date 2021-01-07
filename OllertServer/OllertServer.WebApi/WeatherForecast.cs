@@ -1,6 +1,6 @@
 using System;
 
-namespace OllertApi
+namespace OllertServer.WebApi
 {
     public class WeatherForecast
     {
