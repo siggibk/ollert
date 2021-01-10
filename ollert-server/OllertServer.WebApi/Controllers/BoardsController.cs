@@ -13,22 +13,22 @@ namespace OllertServer.WebApi.Controllers
     [ApiController]
     public class BoardsController : ControllerBase
     {
-        private IBoardService BoardService { get; }
+        private IBoardService _boardService { get; }
         public BoardsController(IBoardService boardService)
         {
-            BoardService = boardService;
+            _boardService = boardService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await BoardService.GetAll());
+            return Ok(await _boardService.GetAll());
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetSingle(Guid id)
         {
-            return Ok(await BoardService.GetSingle(id));
+            return Ok(await _boardService.GetSingle(id));
         }
     }
 }
