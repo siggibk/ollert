@@ -12,9 +12,13 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 using OllertServer.Models.Entities;
 using OllertServer.Repositories;
+using OllertServer.Services.Interfaces;
+using OllertServer.Services.Implementations;
+using OllertServer.Services.MapperProfiles;
 
 namespace OllertServer.WebApi
 {
@@ -30,9 +34,9 @@ namespace OllertServer.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddEntityFrameworkNpgsql();
+            services.AddAutoMapper(typeof(DomainProfile));
 
             services.AddSwaggerGen(c =>
             {
@@ -45,6 +49,9 @@ namespace OllertServer.WebApi
                 connectionString,
                 x => x.MigrationsAssembly("OllertServer.Repositories")
             ));
+
+            // Add our services
+            services.AddScoped<IBoardService, EFBoardService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
