@@ -17,6 +17,7 @@ namespace OllertServer.Services.MapperProfiles
             CreateMap<Column, ColumnDetailDto>();
             CreateMap<Task, TaskDto>();
             CreateMap<BoardInputModel, Board>();
+            CreateMap<ColumnInputModel, Column>();
         }
     }
 }

@@ -61,6 +61,7 @@ namespace OllertServer.WebApi
             // Add our services
             services.AddScoped<IBoardService, EFBoardService>();
             services.AddScoped<IAccountService, EFAccountService>();
+            services.AddScoped<IColumnService, EFColumnService>();
 
             // Add Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()

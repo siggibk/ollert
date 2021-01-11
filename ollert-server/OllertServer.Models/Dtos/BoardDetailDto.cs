@@ -9,6 +9,6 @@ namespace OllertServer.Models.Dtos
         public string Name { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        // columns
+        public IList<ColumnDetailDto> Columns { get; set; }
     }
 }
