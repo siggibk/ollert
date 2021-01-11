@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using OllertServer.Services.Interfaces;
 using OllertServer.Models.Entities;
 using OllertServer.Models.InputModels;
+using OllertServer.Models.Dtos;
 
 namespace OllertServer.Services.Implementations
 {
@@ -32,7 +33,7 @@ namespace OllertServer.Services.Implementations
             _configuration = configuration;
         }
 
-        public async Task<string> Login(LoginInputModel userInput)
+        public async Task<JwtTokenDto> Login(LoginInputModel userInput)
         {
             var validate = await _signInManager.PasswordSignInAsync(
                 userInput.Email,
@@ -44,13 +45,16 @@ namespace OllertServer.Services.Implementations
             if (validate.Succeeded)
             {
                 var user = _userManager.Users.SingleOrDefault(u => u.Email == userInput.Email);
-                return await GenerateToken(user);
+                return new JwtTokenDto
+                {
+                    Access = await GenerateToken(user)
+                };
             }
             // TODO raise failed login exception
             throw new Exception();
         }
 
-        public async Task<string> Register(RegisterInputModel userInput)
+        public async Task<JwtTokenDto> Register(RegisterInputModel userInput)
         {
             var user = await _userManager.FindByEmailAsync(userInput.Email);
 
@@ -71,8 +75,12 @@ namespace OllertServer.Services.Implementations
             if (createAction.Succeeded)
             {
                 await _signInManager.SignInAsync(userObject, false);
-                return await GenerateToken(userObject);
+                return new JwtTokenDto
+                {
+                    Access = await GenerateToken(userObject)
+                };
             }
+
             // TODO custom exception
             throw new Exception();
         }

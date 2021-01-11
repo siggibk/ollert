@@ -3,6 +3,7 @@ using AutoMapper;
 
 using OllertServer.Models.Entities;
 using OllertServer.Models.Dtos;
+using OllertServer.Models.InputModels;
 
 namespace OllertServer.Services.MapperProfiles
 {
@@ -15,6 +16,7 @@ namespace OllertServer.Services.MapperProfiles
             CreateMap<Column, ColumnDto>();
             CreateMap<Column, ColumnDetailDto>();
             CreateMap<Task, TaskDto>();
+            CreateMap<BoardInputModel, Board>();
         }
     }
 }

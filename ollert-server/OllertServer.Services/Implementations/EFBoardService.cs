@@ -5,35 +5,63 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 
 using OllertServer.Repositories;
 using OllertServer.Models.Dtos;
+using OllertServer.Models.InputModels;
+using OllertServer.Models.Entities;
 using OllertServer.Services.Interfaces;
 
 namespace OllertServer.Services.Implementations
 {
     public class EFBoardService : IBoardService
     {
-        private PropertyContext Context { get; }
-        private IMapper Mapper { get; }
-        public EFBoardService(PropertyContext context, IMapper mapper)
+        private PropertyContext _context { get; }
+        private IMapper _mapper { get; }
+        private UserManager<ApplicationUser> _userManager { get; }
+
+        public EFBoardService(
+            PropertyContext context,
+            IMapper mapper,
+            UserManager<ApplicationUser> userManager
+        )
         {
-            Context = context;
-            Mapper = mapper;
+            _context = context;
+            _mapper = mapper;
+            _userManager = userManager;
         }
-        public Task<List<BoardDto>> GetAll()
+        public async Task<List<BoardDto>> GetForUser(string userEmail)
         {
-            return Context.Boards
-                .ProjectTo<BoardDto>(Mapper.ConfigurationProvider)
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            var boards = await _context.Boards
+                .Where(b => b.UserId == user.Id)
+                .ProjectTo<BoardDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
+            return boards;
         }
 
-        public Task<BoardDetailDto> GetSingle(Guid id)
+        public async Task<BoardDetailDto> GetSingle(Guid id)
         {
-            return Context.Boards
+            var board = await _context.Boards
                 .Where(p => p.Id == id)
-                .ProjectTo<BoardDetailDto>(Mapper.ConfigurationProvider)
+                .ProjectTo<BoardDetailDto>(_mapper.ConfigurationProvider)
                 .SingleAsync();
+            return board;
+        }
+
+        public async Task<BoardDetailDto> Create(string userEmail, BoardInputModel input)
+        {
+            var user = await _userManager.FindByEmailAsync(userEmail);
+
+            var board = _mapper.Map<Board>(input);
+            board.User = user;
+
+            _context.Add(board);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<BoardDetailDto>(board);
         }
     }
 }
