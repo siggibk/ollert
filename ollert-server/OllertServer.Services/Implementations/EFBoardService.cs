@@ -47,7 +47,7 @@ namespace OllertServer.Services.Implementations
             var board = await _context.Boards
                 .Where(p => p.Id == id)
                 .ProjectTo<BoardDetailDto>(_mapper.ConfigurationProvider)
-                .SingleAsync();
+                .SingleOrDefaultAsync();
             return board;
         }
 
