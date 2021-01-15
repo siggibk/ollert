@@ -38,18 +38,32 @@ namespace OllertServer.WebApi
 
         public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _env;
+        readonly string AllowSpecificOrigins = "AllowSpecificOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            // services.AddEntityFrameworkNpgsql();
             services.AddAutoMapper(typeof(DomainProfile));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "OllertServer.WebApi", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ollert API", Version = "v1" });
             });
+
+            // cors
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowSpecificOrigins, builder =>
+                {
+                    builder
+                        .WithOrigins(Configuration["CorsOrigin"])
+                        .AllowCredentials()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
 
             // Database connection
             var connectionString = Configuration.GetConnectionString("OllertDb");
@@ -116,11 +130,11 @@ namespace OllertServer.WebApi
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "OllertServer.WebApi v1"));
             }
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            // app.useCors...
+            app.UseCors(AllowSpecificOrigins);
             app.UseAuthentication();
             app.UseAuthorization();
 
