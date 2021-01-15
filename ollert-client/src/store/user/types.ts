@@ -11,6 +11,11 @@ export interface Login {
   password: string
 }
 
+export interface Register {
+  email: string,
+  password: string
+}
+
 export interface UserState {
   loggedIn: boolean,
   user: User | null

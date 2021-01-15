@@ -9,6 +9,7 @@ export function Login(payload: Login): AuthActionTypes {
 }
 
 export function SetUser(payload: User) : AuthActionTypes {
+  // API call should be here?
   return {
     type: SET_USER,
     payload: payload

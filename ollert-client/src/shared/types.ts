@@ -1,3 +1,5 @@
+// DELETE
+
 export interface Board {
   id: string, // guid
   name: string,
