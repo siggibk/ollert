@@ -1,9 +1,12 @@
 import { Container } from '@material-ui/core'
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { Board } from '../shared/types'
 import { RootState } from '../store'
+
+import BoardRepository from '../api/boardRepository'
+import { setCurrentBoard } from '../store/board/actions'
 
 interface Params {
   id: string
@@ -11,18 +14,31 @@ interface Params {
 
 export const BoardDetailPage = () => {
   let { id } = useParams<Params>()
+  const dispatch = useDispatch()
 
-  const board: Board | null = useSelector(
+  // useEffect hook is called once on load and then when [deps] -> id changes
+  useEffect(() => {
+    const getDetails = async () => {
+      try {
+        // fetch board details
+        const { data } = await BoardRepository.getDetails(id)
+        // set current board
+        dispatch(setCurrentBoard(data))
+      } catch (e) {
+        console.log(e)
+        console.log('Couldnt get board details')
+      }
+    }
+    getDetails()
+  }, [id])
+
+  const currentBoard: Board | null = useSelector(
     (state: RootState) => state.board.currentBoard
   )
-  // for each board.columns
-  // -> Column component (drag n drop)
-  // use effect
-  // useCallback
 
   return (
     <Container>
-      <h1>Board details {id} {board?.name}</h1>
+      <h1>{currentBoard?.name}</h1>
     </Container>
   )
 }

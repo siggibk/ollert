@@ -8,7 +8,7 @@ export const ADD_BOARDS = 'ADD_BOARDS'
 // Board state interface
 export interface BoardState {
   boards: Board[],
-  currentBoard: Board | null,
+  currentBoard: BoardDetail | null,
   // test
   tasks: Task[]
 }
@@ -71,7 +71,7 @@ interface AddColumnAction {
 
 interface SetCurrentBoardAction {
   type: typeof SET_CURRENT_BOARD,
-  payload: Board
+  payload: BoardDetail
 }
 
 export type BoardActionTypes = AddTaskAction | AddColumnAction | SetCurrentBoardAction | AddBoardsAction

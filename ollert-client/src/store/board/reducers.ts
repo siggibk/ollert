@@ -10,12 +10,13 @@ const initialState: BoardState = {
 export function boardReducer(state = initialState, action: BoardActionTypes): BoardState {
   switch (action.type) {
     case ADD_BOARDS:
-      console.log(action.payload)
       return {
         ...state,
         boards: action.payload
       }
     case SET_CURRENT_BOARD:
+      console.log('set current board')
+      console.log(action.payload)
       return {
         ...state,
         currentBoard: action.payload

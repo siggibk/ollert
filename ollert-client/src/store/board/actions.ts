@@ -1,9 +1,18 @@
-import { ADD_BOARDS, ADD_COLUMN, ADD_TASK, Board, BoardActionTypes, ColumnDetail, Task } from "./types";
+import { ADD_BOARDS, ADD_COLUMN, ADD_TASK, Board, BoardActionTypes, BoardDetail, ColumnDetail, SET_CURRENT_BOARD, Task } from "./types";
 
 // These action methods get called after the API responds
 export function addBoards(payload: Board[]) : BoardActionTypes {
   return {
     type: ADD_BOARDS,
+    payload: payload
+  }
+}
+
+export function setCurrentBoard(payload: BoardDetail): BoardActionTypes {
+  console.log('Set current board actions.ts')
+  console.log(payload)
+  return {
+    type: SET_CURRENT_BOARD,
     payload: payload
   }
 }
