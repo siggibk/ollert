@@ -1,5 +1,4 @@
-import { convertTypeAcquisitionFromJson } from "typescript";
-import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD } from "./types";
+import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS } from "./types";
 
 const initialState: BoardState = {
   boards: [],
@@ -10,6 +9,12 @@ const initialState: BoardState = {
 
 export function boardReducer(state = initialState, action: BoardActionTypes): BoardState {
   switch (action.type) {
+    case ADD_BOARDS:
+      console.log(action.payload)
+      return {
+        ...state,
+        boards: action.payload
+      }
     case SET_CURRENT_BOARD:
       return {
         ...state,

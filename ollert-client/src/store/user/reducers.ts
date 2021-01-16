@@ -1,5 +1,5 @@
 // import { TypedUseSelectorHook, useSelector } from 'react-redux'
-import { UserState, AuthActionTypes, LOGIN, SET_USER } from './types'
+import { UserState, AuthActionTypes, SET_USER } from './types'
 
 const initialState: UserState = {
   loggedIn: false,

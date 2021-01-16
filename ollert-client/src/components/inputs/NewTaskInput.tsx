@@ -1,24 +1,21 @@
-import React, { createRef, useCallback, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../../store'
+import { TextField } from '@material-ui/core'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { addTask } from '../../store/board/actions'
 import { Task } from '../../store/board/types'
 
 const NewTaskInput: React.FC = () => {
+  const [name, setName] = useState('')
   // hook that returns dispatch method
   const dispatch = useDispatch()
-  const textInput: React.RefObject<HTMLInputElement> = createRef<HTMLInputElement>()
-
-  const tasks: Task[] = useSelector(
-    (state: RootState) => state.board.tasks
-  )
 
   function handleAddTask(e: React.KeyboardEvent<HTMLInputElement>) {
     console.log(`Received event ${e.key}`)
     if (e.key === 'Enter') {
+      // API CALL
       const task: Task = {
         id: '1234',
-        name: 'Task name',
+        name: name,
         description: 'Task description',
         createdAt: new Date()
       }
@@ -37,15 +34,11 @@ const NewTaskInput: React.FC = () => {
 
   return (
     <div>
-      {tasks.length}
-      {tasks.map((task) => {
-        <div>{task.name}</div>
-      })}
-      <input
+      <TextField
         type="text"
         placeholder="Next task?"
-        ref={textInput}
-        onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleAddTask(e)}
+        onChange={(e) => setName(e.target.value)}
+        onKeyPress={handleAddTask}
       />
     </div>
   )

@@ -1,13 +1,9 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-
-import { TaskItem } from './components/ui/TaskItem';
-import { Task } from './shared/types';
-import NewTaskInput from './components/inputs/NewTaskInput';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { IndexPage } from './pages/IndexPage';
 import { Navbar } from './components/ui/Navbar';
+import { BoardDetailPage } from './pages/BoardDetailPage';
 
 function App() {
   return (
@@ -15,7 +11,8 @@ function App() {
       <Navbar></Navbar>
       <div className="App">
         <Switch>
-          <Route path='/' component={IndexPage} />
+          <Route exact path='/' component={IndexPage} />
+          <Route path="/boards/:id" component={BoardDetailPage} />
         </Switch>
       </div>
     </Router>

@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react'
+import React, { useState } from 'react'
 import { Button, Dialog, DialogTitle, DialogActions, TextField, DialogContent } from '@material-ui/core'
 
 type LoginDialogProps = {
