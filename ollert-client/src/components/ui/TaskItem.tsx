@@ -1,5 +1,6 @@
+import { Card, CardContent } from '@material-ui/core'
 import React from 'react'
-import { Task } from '../../shared/types'
+import { Task } from '../../store/board/types'
 
 
 type TaskItemProps = {
@@ -8,9 +9,10 @@ type TaskItemProps = {
 
 export const TaskItem = ({task}: TaskItemProps) => {
   return (
-    <div>
-      <h2>Task!</h2>
-      <div>{task.name}</div>
-    </div>
+    <Card className="task-item">
+      <CardContent>
+        {task.name}
+      </CardContent>
+    </Card>
   )
 }

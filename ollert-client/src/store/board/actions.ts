@@ -9,8 +9,6 @@ export function addBoards(payload: Board[]) : BoardActionTypes {
 }
 
 export function setCurrentBoard(payload: BoardDetail): BoardActionTypes {
-  console.log('Set current board actions.ts')
-  console.log(payload)
   return {
     type: SET_CURRENT_BOARD,
     payload: payload
@@ -19,6 +17,8 @@ export function setCurrentBoard(payload: BoardDetail): BoardActionTypes {
 
 export function addTask(payload: Task): BoardActionTypes {
   console.log('In add task action actions.ts')
+  console.log(payload)
+
   return {
     type: ADD_TASK,
     payload: payload

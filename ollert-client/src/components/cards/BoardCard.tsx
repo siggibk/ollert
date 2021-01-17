@@ -1,6 +1,6 @@
 import { Button, Card, CardActions, CardContent, makeStyles, Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
-import { Board } from "../../shared/types";
+import { Board } from "../../store/board/types";
 
 interface Props {
   board: Board

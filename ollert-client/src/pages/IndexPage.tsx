@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, Container } from '@material-ui/core'
-import NewTaskInput from '../components/inputs/NewTaskInput'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
 import { Board } from '../store/board/types'
@@ -29,7 +28,6 @@ export const IndexPage = () => {
   return (
     <Container>
       <h1>Index page</h1>
-      <NewTaskInput />
       <Button variant="contained" color="secondary" onClick={fetchBoards}>Fetch boards!</Button>
       <h2>Boards length</h2>
       {boards.length}

@@ -26,7 +26,7 @@ export interface NewColumn {
 export interface NewTask {
   name: string,
   description?: string,
-  columnId: string
+  columnId?: string
 }
 
 // models from API

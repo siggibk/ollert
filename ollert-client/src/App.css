@@ -3,3 +3,21 @@
   justify-content: space-between;
   padding: 0.5rem;
 }
+
+.columns {
+  display: flex;
+}
+
+.column {
+  width: 25%;
+  height: 80vh;
+  margin-right: 1.5rem;
+}
+
+.task-item {
+  margin-bottom: 1rem;
+}
+
+.column-title {
+  margin-bottom: 2rem;
+}

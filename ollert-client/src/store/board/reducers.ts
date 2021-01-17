@@ -27,9 +27,21 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       console.log('In add task')
       console.log(action.type)
       console.log(action.payload)
+      const index = 0
       return {
         ...state,
-        tasks: state.tasks.concat([action.payload])
+        currentBoard: {
+          ...state.currentBoard,
+          columns: {
+            ...state.currentBoard?.columns,
+            [index]: {
+              tasks: [
+                ...state.currentBoard?.columns?[index].tasks,
+                action.payload
+              ]
+            }
+          }
+        }
       }
     case ADD_COLUMN:
       // fix

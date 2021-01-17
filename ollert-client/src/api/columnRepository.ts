@@ -3,13 +3,13 @@ import client from './client'
 
 // fix client returns Promise<T>
 export default {
-  create(payload: NewColumn) : any {
+  create(payload: NewColumn) : Promise<any> {
     return client.post('columns', payload)
   },
-  getDetails(id: string) : any {
+  getDetails(id: string) : Promise<any> {
     return client.get(`columns/${id}/`)
   },
-  del(id: string) : any {
-    return client.delete(`columns${id}/`)
+  del(id: string) : Promise<any> {
+    return client.delete(`columns/${id}/`)
   }
 }
