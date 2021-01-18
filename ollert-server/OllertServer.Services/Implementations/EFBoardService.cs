@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using t = System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
@@ -31,7 +31,7 @@ namespace OllertServer.Services.Implementations
             _mapper = mapper;
             _userManager = userManager;
         }
-        public async Task<List<BoardDto>> GetForUser(string userEmail)
+        public async t.Task<List<BoardDto>> GetForUser(string userEmail)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
 
@@ -42,7 +42,7 @@ namespace OllertServer.Services.Implementations
             return boards;
         }
 
-        public async Task<BoardDetailDto> GetSingle(Guid id)
+        public async t.Task<BoardDetailDto> GetSingle(Guid id)
         {
             var board = await _context.Boards
                 .Where(p => p.Id == id)
@@ -51,7 +51,7 @@ namespace OllertServer.Services.Implementations
             return board;
         }
 
-        public async Task<BoardDetailDto> Create(string userEmail, BoardInputModel input)
+        public async t.Task<BoardDetailDto> Create(string userEmail, BoardInputModel input)
         {
             var user = await _userManager.FindByEmailAsync(userEmail);
 
@@ -62,6 +62,17 @@ namespace OllertServer.Services.Implementations
             await _context.SaveChangesAsync();
 
             return _mapper.Map<BoardDetailDto>(board);
+        }
+
+        public async t.Task Update(Guid id, BoardUpdateDto input)
+        {
+            var board = await _context.Boards
+                .Where(b => b.Id == id)
+                .SingleOrDefaultAsync();
+
+            board.Name = input.Name ?? board.Name;
+            _context.Update(board);
+            await _context.SaveChangesAsync();
         }
     }
 }

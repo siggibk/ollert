@@ -38,5 +38,13 @@ namespace OllertServer.WebApi.Controllers
 
             return CreatedAtAction(nameof(GetSingle), new { id = column.Id }, column);
         }
+
+        [Authorize]
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> Update([FromBody] ColumnUpdateDto input, Guid id)
+        {
+            await _columnService.Update(id, input);
+            return NoContent();
+        }
     }
 }

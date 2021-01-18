@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using t = System.Threading.Tasks;
 
 using OllertServer.Models.Dtos;
 using OllertServer.Models.InputModels;
@@ -10,8 +10,9 @@ namespace OllertServer.Services.Interfaces
 {
     public interface IColumnService
     {
-        Task<List<ColumnDetailDto>> GetColumnsForBoard(Guid boardId);
-        Task<ColumnDetailDto> GetSingle(Guid id);
-        Task<ColumnDetailDto> Create(ColumnInputModel input);
+        t.Task<List<ColumnDetailDto>> GetColumnsForBoard(Guid boardId);
+        t.Task<ColumnDetailDto> GetSingle(Guid id);
+        t.Task<ColumnDetailDto> Create(ColumnInputModel input);
+        t.Task Update(Guid id, ColumnUpdateDto input);
     }
 }

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using t = System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
@@ -25,7 +25,7 @@ namespace OllertServer.Services.Implementations
             _mapper = mapper;
         }
 
-        public async Task<List<ColumnDetailDto>> GetColumnsForBoard(Guid boardId)
+        public async t.Task<List<ColumnDetailDto>> GetColumnsForBoard(Guid boardId)
         {
             var columns = await _context.Columns
                 .Where(c => c.BoardId == boardId)
@@ -34,7 +34,7 @@ namespace OllertServer.Services.Implementations
             return columns;
         }
 
-        public async Task<ColumnDetailDto> GetSingle(Guid id)
+        public async t.Task<ColumnDetailDto> GetSingle(Guid id)
         {
             var column = await _context.Columns
                 .Where(c => c.Id == id)
@@ -43,12 +43,23 @@ namespace OllertServer.Services.Implementations
             return column;
         }
 
-        public async Task<ColumnDetailDto> Create(ColumnInputModel input)
+        public async t.Task<ColumnDetailDto> Create(ColumnInputModel input)
         {
             var column = _mapper.Map<Column>(input);
             _context.Add(column);
             await _context.SaveChangesAsync();
             return _mapper.Map<ColumnDetailDto>(column);
+        }
+
+        public async t.Task Update(Guid id, ColumnUpdateDto input)
+        {
+            var column = await _context.Columns
+                .Where(c => c.Id == id)
+                .SingleOrDefaultAsync();
+
+            column.Name = input.Name ?? column.Name;
+            _context.Update(column);
+            await _context.SaveChangesAsync();
         }
     }
 }

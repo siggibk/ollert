@@ -41,5 +41,16 @@ namespace OllertServer.Services.Implementations
                 .SingleOrDefaultAsync();
             return task;
         }
+
+        public async t.Task Update(Guid id, TaskUpdateDto input)
+        {
+            var task = await _context.Tasks
+                .Where(t => t.Id == id)
+                .SingleOrDefaultAsync();
+
+            task.Name = input.Name ?? task.Name;
+            _context.Update(task);
+            await _context.SaveChangesAsync();
+        }
     }
 }
