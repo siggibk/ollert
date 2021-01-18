@@ -1,10 +1,8 @@
-import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS } from "./types";
+import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD } from "./types";
 
 const initialState: BoardState = {
   boards: [],
-  currentBoard: null,
-  // test
-  tasks: []
+  currentBoard: null
 }
 
 export function boardReducer(state = initialState, action: BoardActionTypes): BoardState {
@@ -14,6 +12,12 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
         ...state,
         boards: action.payload
       }
+    case ADD_BOARD:
+      /* return {
+        ...state,
+        boards: [...state.boards, action.payload]
+      } */
+      return state
     case SET_CURRENT_BOARD:
       console.log('set current board')
       console.log(action.payload)
@@ -22,31 +26,37 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
         currentBoard: action.payload
       }
     case ADD_TASK:
-      // fix
-      // currentBoard.columns.find() -> c.tasks.push(..)
-      console.log('In add task')
-      console.log(action.type)
-      console.log(action.payload)
-      const index = 0
+      if (!state.currentBoard) {
+        throw new Error("Current board is null, cannot add task: reducers.ts");
+      }
+
       return {
         ...state,
         currentBoard: {
           ...state.currentBoard,
-          columns: {
-            ...state.currentBoard?.columns,
-            [index]: {
-              tasks: [
-                ...state.currentBoard?.columns?[index].tasks,
-                action.payload
-              ]
-            }
-          }
+          columns: 
+            state.currentBoard.columns.map((col) => {
+              if (col.id === action.payload.columnId) {
+                return {
+                  ...col,
+                  tasks: col.tasks.concat(action.payload)
+                }
+              }
+              return col
+            })
         }
       }
     case ADD_COLUMN:
-      // fix
-      // push payload to currentBoard.columns
-      return state
+      return {
+        ...state,
+        currentBoard: {
+          ...state.currentBoard!,
+          columns: [
+            ...state.currentBoard!.columns,
+            action.payload
+          ]
+        }
+      }
     default:
       return state
   }

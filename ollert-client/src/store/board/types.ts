@@ -4,13 +4,12 @@ export const ADD_COLUMN = 'ADD_COLUMN'
 export const DELETE_COLUMN = 'DELETE_COLUMN'
 export const SET_CURRENT_BOARD = 'SET_CURRENT_BOARD'
 export const ADD_BOARDS = 'ADD_BOARDS'
+export const ADD_BOARD = 'ADD_BOARD'
 
 // Board state interface
 export interface BoardState {
   boards: Board[],
   currentBoard: BoardDetail | null,
-  // test
-  tasks: Task[]
 }
 
 // Input interfaces
@@ -19,7 +18,7 @@ export interface NewBoard {
 }
 
 export interface NewColumn {
-  name: string,
+  name?: string,
   boardId: string
 }
 
@@ -50,6 +49,7 @@ export interface ColumnDetail {
 export interface Task {
   id: string,
   name: string,
+  columnId: string,
   description: string | null,
   createdAt: Date
 }
@@ -59,6 +59,10 @@ interface AddBoardsAction {
   payload: Board[]
 }
 
+interface AddBoardAction {
+  type: typeof ADD_BOARD,
+  payload: Board
+}
 interface AddTaskAction {
   type: typeof ADD_TASK,
   payload: Task
@@ -74,4 +78,7 @@ interface SetCurrentBoardAction {
   payload: BoardDetail
 }
 
-export type BoardActionTypes = AddTaskAction | AddColumnAction | SetCurrentBoardAction | AddBoardsAction
+export type BoardActionTypes = (
+  AddTaskAction | AddColumnAction | SetCurrentBoardAction | AddBoardsAction |
+  AddBoardAction
+)
