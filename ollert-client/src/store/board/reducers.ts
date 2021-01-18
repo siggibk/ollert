@@ -1,4 +1,4 @@
-import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD } from "./types";
+import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD, UPDATE_COLUMN } from "./types";
 
 const initialState: BoardState = {
   boards: [],
@@ -55,6 +55,23 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
             ...state.currentBoard!.columns,
             action.payload
           ]
+        }
+      }
+    case UPDATE_COLUMN:
+      return {
+        ...state,
+        currentBoard: {
+          ...state.currentBoard!,
+          columns:
+            state.currentBoard!.columns.map((col) => {
+              if (col.id === action.payload.id) {
+                return {
+                  ...col,
+                  ...action.payload
+                }
+              }
+              return col
+            })
         }
       }
     default:

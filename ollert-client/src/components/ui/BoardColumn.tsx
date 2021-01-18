@@ -1,12 +1,14 @@
 import React, { useState } from "react"
 import { Card, CardContent, Divider, TextField } from "@material-ui/core"
 import { useDispatch } from "react-redux"
-import { ColumnDetail, NewTask } from "../../store/board/types"
+import { ColumnDetail, NewTask, UpdateColumn } from "../../store/board/types"
 import { NewTaskInput } from "../inputs/NewTaskInput"
 import { TaskItem } from "./TaskItem"
+import { addTask, updateColumn } from "../../store/board/actions"
 
 import taskRepository from '../../api/taskRepository'
-import { addTask } from "../../store/board/actions"
+import columnRepository from '../../api/columnRepository'
+
 
 interface Props {
   column: ColumnDetail
@@ -29,14 +31,40 @@ export const BoardColumn = ({column} : Props) => {
     }
   }
 
-  const updateName = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      // update column name
-      console.log(`Update name w. ${newName}`)
+  const updateName = async () => {
+    if (newName === column.name) {
+      return
+    }
 
-      // dispatch success
+    // update column name
+    console.log(`Update name w. ${newName}`)
+    const updateDto: UpdateColumn  = {
+      name: newName
+    }
+
+    await columnRepository.patch(column.id, updateDto)
+    
+    // add id to payload for reducers
+    updateDto.id = column.id
+    dispatch(updateColumn(updateDto))
+    
+    // reset newName and exit edit mode
+    setNewName('')
+    setNameEditActive(false)
+  }
+
+  const onNameBlur = async () => {
+    if (newName !== column.name) {
+      await updateName()
+    } else {
       setNewName('')
       setNameEditActive(false)
+    }
+  }
+
+  const onNameChange = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      await updateName()
     }
   }
 
@@ -59,11 +87,11 @@ export const BoardColumn = ({column} : Props) => {
   const nameInput = () => {
     return (
       <TextField
-        onBlur={() => setNameEditActive(false)}
+        onBlur={onNameBlur}
         value={newName}
         autoFocus
         onChange={(e) => setNewName(e.target.value)} placeholder="Col name"
-        onKeyPress={updateName}
+        onKeyPress={onNameChange}
       />
     )
   }
