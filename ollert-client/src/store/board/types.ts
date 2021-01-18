@@ -6,11 +6,13 @@ export const SET_CURRENT_BOARD = 'SET_CURRENT_BOARD'
 export const ADD_BOARDS = 'ADD_BOARDS'
 export const ADD_BOARD = 'ADD_BOARD'
 export const UPDATE_COLUMN = 'UPDATE_COLUMN'
+export const UPDATE_TASK = 'UPDATE_TASK'
 
 // Board state interface
 export interface BoardState {
   boards: Board[],
   currentBoard: BoardDetail | null,
+  tasks: Task[]
 }
 
 // Input interfaces
@@ -25,7 +27,7 @@ export interface NewColumn {
 
 export interface UpdateColumn {
   name?: string
-  // only for reducer to help update state
+  // only for reducer to help update the global state
   id?: string
 }
 
@@ -33,6 +35,13 @@ export interface NewTask {
   name: string,
   description?: string,
   columnId?: string
+}
+
+export interface UpdateTask {
+  name?: string,
+  columnId?: string,
+  // only for reducer to help update the global state
+  id?: string
 }
 
 // models from API
@@ -90,7 +99,13 @@ interface UpdateColumnAction {
   payload: UpdateColumn
 }
 
+interface UpdateTaskAction {
+  type: typeof UPDATE_TASK,
+  payload: UpdateTask
+
+}
+
 export type BoardActionTypes = (
   AddTaskAction | AddColumnAction | SetCurrentBoardAction | AddBoardsAction |
-  AddBoardAction | UpdateColumnAction
+  AddBoardAction | UpdateColumnAction | UpdateTaskAction
 )

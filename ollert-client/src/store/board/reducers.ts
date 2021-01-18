@@ -1,8 +1,13 @@
-import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD, UPDATE_COLUMN } from "./types";
+import taskRepository from "../../api/taskRepository";
+import { setCurrentBoard } from "./actions";
+import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD, UPDATE_COLUMN, Task, UPDATE_TASK } from "./types";
 
+// TODO make state flatter
+// some duplicates going on inside currentBoard
 const initialState: BoardState = {
   boards: [],
-  currentBoard: null
+  currentBoard: null,
+  tasks: []
 }
 
 export function boardReducer(state = initialState, action: BoardActionTypes): BoardState {
@@ -19,11 +24,14 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       } */
       return state
     case SET_CURRENT_BOARD:
-      console.log('set current board')
-      console.log(action.payload)
+      const columns = action.payload.columns
+      const empty: Task[] = []
+      const merged_tasks: Task[] = empty.concat(...columns.map((col) => col.tasks))
+
       return {
         ...state,
-        currentBoard: action.payload
+        currentBoard: action.payload,
+        tasks: merged_tasks
       }
     case ADD_TASK:
       if (!state.currentBoard) {
@@ -32,7 +40,8 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
 
       return {
         ...state,
-        currentBoard: {
+        tasks: [...state.tasks, action.payload],
+        /* currentBoard: {
           ...state.currentBoard,
           columns: 
             state.currentBoard.columns.map((col) => {
@@ -44,7 +53,7 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
               }
               return col
             })
-        }
+        } */
       }
     case ADD_COLUMN:
       return {
@@ -73,6 +82,20 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
               return col
             })
         }
+      }
+    case UPDATE_TASK:
+      return {
+        ...state,
+        tasks:
+          state.tasks.map((task) => {
+            if (task.id === action.payload.id) {
+              return {
+                ...task,
+                ...action.payload
+              }
+            }
+            return task
+          })
       }
     default:
       return state

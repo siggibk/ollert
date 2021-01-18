@@ -1,13 +1,16 @@
 import React, { useState } from "react"
 import { Card, CardContent, Divider, TextField } from "@material-ui/core"
-import { useDispatch } from "react-redux"
-import { ColumnDetail, NewTask, UpdateColumn } from "../../store/board/types"
+import { useDispatch, useSelector } from "react-redux"
+import { ColumnDetail, NewTask, Task, UpdateColumn } from "../../store/board/types"
 import { NewTaskInput } from "../inputs/NewTaskInput"
 import { TaskItem } from "./TaskItem"
 import { addTask, updateColumn } from "../../store/board/actions"
 
 import taskRepository from '../../api/taskRepository'
 import columnRepository from '../../api/columnRepository'
+import { Droppable } from "react-beautiful-dnd"
+import { TaskList } from "../lists/TaskList"
+import { RootState } from "../../store"
 
 
 interface Props {
@@ -17,6 +20,11 @@ interface Props {
 export const BoardColumn = ({column} : Props) => {
   const [nameEditActive, setNameEditActive] = useState<boolean>(false)
   const [newName, setNewName] = useState<string>('')
+  
+  // tasks for this column
+  const tasks: Task[] = useSelector(
+    (state: RootState) => state.board.tasks.filter((t) => t.columnId === column.id)
+  )
 
   const dispatch = useDispatch()
 
@@ -68,22 +76,6 @@ export const BoardColumn = ({column} : Props) => {
     }
   }
 
-  const taskList = () => {
-    return (
-      <div>
-        {column.tasks.map((task) => (
-          <TaskItem key={task.id} task={task} />
-        ))}
-      </div>
-    )
-  }
-
-  const noTasks = () => {
-    return (
-      <span>No tasks yet</span>
-    )
-  }
-
   const nameInput = () => {
     return (
       <TextField
@@ -104,7 +96,7 @@ export const BoardColumn = ({column} : Props) => {
   const columnName = () => {
     return (
       <div onClick={handleSetNameEditActive}>
-        <span>{column.name} ({column.tasks.length} tasks)</span>
+        <span>{column.name} ({tasks.length} tasks)</span>
         <Divider />
       </div>
     )
@@ -116,7 +108,19 @@ export const BoardColumn = ({column} : Props) => {
         <div className="column-title">
           {!column.name || nameEditActive ? nameInput() : columnName()}
         </div>
-        {column.tasks.length > 0 ?  taskList() : noTasks()}
+        <Droppable droppableId={column.id}>
+          {(provided) =>
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            {tasks.map((task, idx) => (
+              <TaskItem key={task.id} task={task} index={idx} />
+            ))}
+            {provided.placeholder}
+          </div> 
+            /* <{ TaskList ref={provided.innerRef} {...provided.droppableProps} tasks={column.tasks}>
+              {provided.placeholder}
+            </TaskList> } */
+          }
+        </Droppable>
         <div className="new-task">
           <NewTaskInput onSubmit={createNewTask} />
         </div>

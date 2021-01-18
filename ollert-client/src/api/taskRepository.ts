@@ -1,4 +1,4 @@
-import { NewTask } from '../store/board/types'
+import { NewTask, UpdateTask } from '../store/board/types'
 import client from './client'
 
 // fix client returns Promise<T>
@@ -8,5 +8,8 @@ export default {
   },
   del(id: string) : Promise<any> {
     return client.delete(`tasks/${id}/`)
+  },
+  patch(id:string, payload: UpdateTask): Promise<any> {
+    return client.patch(`tasks/${id}/`, payload)
   }
 }
