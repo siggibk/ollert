@@ -49,6 +49,13 @@ namespace OllertServer.Services.Implementations
                 .SingleOrDefaultAsync();
 
             task.Name = input.Name ?? task.Name;
+
+            // Operator '??' cannot be applied to operands of type 'Guid' and 'Guid'
+            if (input.ColumnId != null)
+            {
+                task.ColumnId = input.ColumnId;
+            }
+
             _context.Update(task);
             await _context.SaveChangesAsync();
         }

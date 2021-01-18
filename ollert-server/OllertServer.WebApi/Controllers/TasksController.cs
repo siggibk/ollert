@@ -38,5 +38,13 @@ namespace OllertServer.WebApi.Controllers
 
             return CreatedAtAction(nameof(GetSingle), new { id = task.Id }, task);
         }
+
+        [Authorize]
+        [HttpPatch("{id:guid}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] TaskUpdateDto input)
+        {
+            await _taskService.Update(id, input);
+            return NoContent();
+        }
     }
 }

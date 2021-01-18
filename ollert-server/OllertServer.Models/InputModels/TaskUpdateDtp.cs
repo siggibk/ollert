@@ -6,6 +6,7 @@ namespace OllertServer.Models.InputModels
     public class TaskUpdateDto
     {
         public string Name { get; set; }
-        // order
+        public Guid ColumnId { get; set; }
+        // TODO relative order
     }
 }
