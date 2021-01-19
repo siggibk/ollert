@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Card, CardContent, Divider, TextField } from "@material-ui/core"
 import { useDispatch, useSelector } from "react-redux"
 import { ColumnDetail, NewTask, Task, UpdateColumn } from "../../store/board/types"
@@ -11,6 +11,7 @@ import columnRepository from '../../api/columnRepository'
 import { Droppable } from "react-beautiful-dnd"
 import { TaskList } from "../lists/TaskList"
 import { RootState } from "../../store"
+import { reverse } from "dns"
 
 
 interface Props {
@@ -23,8 +24,29 @@ export const BoardColumn = ({column} : Props) => {
   
   // tasks for this column
   const tasks: Task[] = useSelector(
-    (state: RootState) => state.board.tasks.filter((t) => t.columnId === column.id)
+    (state: RootState) => state.board.testTasks![column.id]
+    // (state: RootState) => state.board.tasks.filter((t) => t.columnId === column.id)
   )
+  
+
+  const orderByRelativeOrder = (tasks: Task[]) => {
+    const tasksCopy = tasks.slice()
+    return tasksCopy.sort((a, b) => {
+      // sort by relative order
+      const relativeOrderValue = a.relativeOrder - b.relativeOrder
+      return relativeOrderValue
+      if (relativeOrderValue !== 0) {
+        return relativeOrderValue
+      }
+      // relativeOrder is the same so we sort by createdAt
+      const aCreatedAt = new Date(a.createdAt)
+      const bCreatedAt = new Date(b.createdAt)
+      // oldest task first
+      return +aCreatedAt - +bCreatedAt
+    })
+  }
+
+  const orderedTasks = useMemo(() => orderByRelativeOrder(tasks), [tasks]);
 
   const dispatch = useDispatch()
 
@@ -111,7 +133,7 @@ export const BoardColumn = ({column} : Props) => {
         <Droppable droppableId={column.id}>
           {(provided) =>
           <div {...provided.droppableProps} ref={provided.innerRef}>
-            {tasks.map((task, idx) => (
+            {orderedTasks.map((task, idx) => (
               <TaskItem key={task.id} task={task} index={idx} />
             ))}
             {provided.placeholder}

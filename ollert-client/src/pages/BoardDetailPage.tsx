@@ -6,9 +6,9 @@ import { RootState } from '../store'
 import boardRepository from '../api/boardRepository'
 import columnRepository from '../api/columnRepository'
 import taskRepository from '../api/taskRepository'
-import { addColumn, setCurrentBoard, updateTask } from '../store/board/actions'
+import { addColumn, moveTask, setCurrentBoard, updateTask } from '../store/board/actions'
 import { BoardColumn } from '../components/ui/BoardColumn'
-import { BoardDetail, ColumnDetail, NewColumn, UpdateTask } from '../store/board/types'
+import { BoardDetail, ColumnDetail, MoveTask, NewColumn, UpdateTask } from '../store/board/types'
 import { DragDropContext } from 'react-beautiful-dnd'
 interface Params {
   id: string
@@ -78,23 +78,59 @@ export const BoardDetailPage = () => {
   } */
 
   // TODO not any: Define interfaces as DraggableResult
-  const onDragEnd = async ({draggableId, source, destination}: any) => {
-    console.log('On drag end!')
-    console.log('Draggable id aka task')
-    console.log(draggableId)
-    
-    console.log('From source aka column and what index')
-    console.log(`
-      from column ${source.droppableId} idx ${source.index} to ${destination.droppableId} at idx ${destination.index}
-    `)
-
-    const taskDto: UpdateTask = {
-      columnId: destination.droppableId
+  const onDragEnd = async (result: any) => {
+    console.log(result)
+    const {draggableId, source, destination} = result
+    if (!destination) {
+      return
     }
 
-    // update state before doing the API call for better ui responsiveness
-    dispatch(updateTask({...taskDto, id: draggableId}))
+    const taskDto: UpdateTask = {
+      columnId: destination.droppableId,
+      // relativeOrder: destination.index
+    }
+
+    const moveTaskObj: MoveTask = {
+      taskId: draggableId,
+      source: {
+        index: source.index,
+        columnId: source.droppableId
+      },
+      destination: {
+        index: destination.index,
+        columnId: destination.droppableId
+      }
+    }
+    dispatch(moveTask(moveTaskObj))
+
+    /*
+
+    columns: [1,2,3]
+    tasks: {
+      1: [{rlPos: 1}, {rlPos: 4}],
+      2: [{rlPos}]
+    }
+    const moveTask: MoveTask = {
+      taskId: droppableId,
+      source: {
+        index: 1,
+        columnId: 1
+      },
+      destination: {
+        index: 2,
+        columnId: 3
+      }
+    }
+
+    tasks[col].filter()
+    */
+    // remove [source.index] from source column
+    // insert draggableId into [destination.index]
+    // get destination[destIndex-1].relativePos + destination[destIndex+1] / 2
     
+    // update state before doing the API call for better ui responsiveness
+    /* dispatch(updateTask({...taskDto, id: draggableId}))
+
     try {
       // update task column
       await taskRepository.patch(draggableId, taskDto)
@@ -104,8 +140,7 @@ export const BoardDetailPage = () => {
       dispatch(updateTask({...taskDto, id: draggableId}))
       console.log('Failed to update task after dnd')
       console.log(e)
-    }
-
+    } */
   }
 
   return (

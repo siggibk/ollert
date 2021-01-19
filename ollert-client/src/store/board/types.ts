@@ -7,12 +7,19 @@ export const ADD_BOARDS = 'ADD_BOARDS'
 export const ADD_BOARD = 'ADD_BOARD'
 export const UPDATE_COLUMN = 'UPDATE_COLUMN'
 export const UPDATE_TASK = 'UPDATE_TASK'
+export const MOVE_TASK = 'MOVE_TASK'
 
 // Board state interface
 export interface BoardState {
   boards: Board[],
   currentBoard: BoardDetail | null,
-  tasks: Task[]
+  tasks: Task[],
+  testColumns: ColumnDetail[],
+  testTasks: ColumnnTask | null // temp
+}
+
+export interface ColumnnTask {
+  [key: string]: Task[]
 }
 
 // Input interfaces
@@ -40,6 +47,7 @@ export interface NewTask {
 export interface UpdateTask {
   name?: string,
   columnId?: string,
+  relativeOrder?: number,
   // only for reducer to help update the global state
   id?: string
 }
@@ -67,7 +75,18 @@ export interface Task {
   name: string,
   columnId: string,
   description: string | null,
+  relativeOrder: number,
   createdAt: Date
+}
+
+export interface MoveTaskColumnInfo {
+  index: number,
+  columnId: string
+}
+export interface MoveTask {
+  taskId: string,
+  source: MoveTaskColumnInfo,
+  destination: MoveTaskColumnInfo
 }
 
 interface AddBoardsAction {
@@ -105,7 +124,12 @@ interface UpdateTaskAction {
 
 }
 
+interface MoveTaskAction {
+  type: typeof MOVE_TASK,
+  payload: MoveTask
+}
+
 export type BoardActionTypes = (
   AddTaskAction | AddColumnAction | SetCurrentBoardAction | AddBoardsAction |
-  AddBoardAction | UpdateColumnAction | UpdateTaskAction
+  AddBoardAction | UpdateColumnAction | UpdateTaskAction | MoveTaskAction
 )
