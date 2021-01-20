@@ -7,7 +7,7 @@ namespace OllertServer.Models.Dtos
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid ColumnId { get; set; }
-        public int RelativeOrder { get; set; }
+        public double RelativeOrder { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

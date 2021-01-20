@@ -7,6 +7,6 @@ namespace OllertServer.Models.InputModels
     {
         public string Name { get; set; }
         public Guid? ColumnId { get; set; }
-        public int? RelativeOrder { get; set; }
+        public double? RelativeOrder { get; set; }
     }
 }
