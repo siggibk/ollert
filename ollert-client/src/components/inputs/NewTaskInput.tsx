@@ -18,6 +18,7 @@ export const NewTaskInput = ({onSubmit}: Props) => {
         name: name
       }
       onSubmit(task)
+      setName('')
     }
   }
 
@@ -28,6 +29,7 @@ export const NewTaskInput = ({onSubmit}: Props) => {
         placeholder="Do laundry"
         onChange={(e) => setName(e.target.value)}
         onKeyPress={handleAddTask}
+        value={name}
         fullWidth={true}
       />
     </div>

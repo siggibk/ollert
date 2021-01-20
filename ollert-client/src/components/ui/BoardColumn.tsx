@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { Card, CardContent, Divider, TextField } from "@material-ui/core"
+import { Card, CardContent, Divider, makeStyles, TextField, Typography } from "@material-ui/core"
 import { useDispatch, useSelector } from "react-redux"
 import { ColumnDetail, NewTask, Task, UpdateColumn } from "../../store/board/types"
 import { NewTaskInput } from "../inputs/NewTaskInput"
@@ -16,19 +16,40 @@ interface Props {
   column: ColumnDetail
 }
 
+const styles = makeStyles({
+  content: {
+    padding: '1rem'
+  },
+  droppable: {
+    minHeight: '3rem'
+  }
+})
+
 export const BoardColumn = ({column} : Props) => {
+  const classes = styles()
   const [nameEditActive, setNameEditActive] = useState<boolean>(false)
   const [newName, setNewName] = useState<string>('')
   
   // tasks for this column
   const tasks: Task[] = useSelector(
-    (state: RootState) => state.board.testTasks![column.id]
+    (state: RootState) => state.board.tasks![column.id]
   )
 
   const dispatch = useDispatch()
 
   const createNewTask = async (task: NewTask) => {
+    // set new tasks position
+    let taskPos: number = 20
+    const tasksCopy: Task[]  = [...tasks]
+
+    if (tasksCopy.length > 0) {
+      const referenceTask: Task = tasksCopy.splice(tasksCopy.length-1, 1)[0]
+      taskPos = taskPos + referenceTask.relativeOrder
+    }
+
     task.columnId = column.id
+    task.relativeOrder = taskPos
+
     try {
       const { data } = await taskRepository.create(task)
       dispatch(addTask(data))
@@ -83,6 +104,7 @@ export const BoardColumn = ({column} : Props) => {
         autoFocus
         onChange={(e) => setNewName(e.target.value)} placeholder="Col name"
         onKeyPress={onNameChange}
+        fullWidth={true}
       />
     )
   }
@@ -101,15 +123,24 @@ export const BoardColumn = ({column} : Props) => {
     )
   }
 
+  const noTasks = () => {
+    return (
+      <Typography color="textSecondary">
+        No tasks in {column.name}
+      </Typography>
+    )
+  }
+
   return (
     <Card className="column" style={{overflow: 'auto'}}>
-      <CardContent>
+      <CardContent className={classes.content}>
         <div className="column-title">
           {!column.name || nameEditActive ? nameInput() : columnName()}
         </div>
         <Droppable droppableId={column.id}>
           {(provided) =>
-          <div {...provided.droppableProps} ref={provided.innerRef}>
+          <div className={classes.droppable} {...provided.droppableProps} ref={provided.innerRef}>
+            {tasks.length === 0 ? noTasks(): ''}
             {tasks.map((task, idx) => (
               <TaskItem key={task.id} task={task} index={idx} />
             ))}

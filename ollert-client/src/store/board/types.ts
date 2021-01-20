@@ -13,9 +13,8 @@ export const MOVE_TASK = 'MOVE_TASK'
 export interface BoardState {
   boards: Board[],
   currentBoard: BoardDetail | null,
-  tasks: Task[],
-  testColumns: ColumnDetail[],
-  testTasks: ColumnnTask | null // temp
+  columns: ColumnDetail[],
+  tasks: ColumnnTask | null
 }
 
 export interface ColumnnTask {
@@ -41,7 +40,8 @@ export interface UpdateColumn {
 export interface NewTask {
   name: string,
   description?: string,
-  columnId?: string
+  columnId?: string,
+  relativeOrder?: number
 }
 
 export interface UpdateTask {
@@ -76,7 +76,9 @@ export interface Task {
   columnId: string,
   description: string | null,
   relativeOrder: number,
-  createdAt: Date
+  createdAt: Date,
+  // client only variable
+  loadedOnBoard?: boolean
 }
 
 export interface MoveTaskColumnInfo {

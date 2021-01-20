@@ -7,9 +7,8 @@ import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, 
 const initialState: BoardState = {
   boards: [],
   currentBoard: null,
-  tasks: [],
-  testColumns: [],
-  testTasks: null
+  columns: [],
+  tasks: null
 }
 
 export function boardReducer(state = initialState, action: BoardActionTypes): BoardState {
@@ -27,47 +26,29 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       return state
     case SET_CURRENT_BOARD:
       const columns = action.payload.columns
-      const empty: Task[] = []
-      const merged_tasks: Task[] = empty.concat(...columns.map((col) => col.tasks))
-
       const flatTasks: ColumnnTask = {}
       columns.forEach((col) => (
         flatTasks[col.id] = col.tasks.sort((a,b) => a.relativeOrder - b.relativeOrder)
       ))
 
-      /* const flatTasks: ColumnnTask = columns.map((col) => (
-        {[col.id]: col.tasks}
-      )) */
-
       return {
         ...state,
         currentBoard: action.payload,
-        tasks: merged_tasks,
-        testColumns: columns,
-        testTasks: flatTasks
+        columns: columns,
+        tasks: flatTasks
       }
     case ADD_TASK:
       if (!state.currentBoard) {
         throw new Error("Current board is null, cannot add task: reducers.ts");
       }
-      // position should be at the bottom!
-      const posValue = 100
+
       return {
         ...state,
-        tasks: [...state.tasks, action.payload],
-        /* currentBoard: {
-          ...state.currentBoard,
-          columns: 
-            state.currentBoard.columns.map((col) => {
-              if (col.id === action.payload.columnId) {
-                return {
-                  ...col,
-                  tasks: col.tasks.concat(action.payload)
-                }
-              }
-              return col
-            })
-        } */
+        tasks: {
+          ...state.tasks,
+          [action.payload.columnId]:
+            [...state.tasks![action.payload.columnId]].concat(action.payload)
+        }
       }
     case ADD_COLUMN:
       return {
@@ -97,20 +78,6 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
             })
         }
       }
-    case UPDATE_TASK:
-      return {
-        ...state,
-        tasks:
-          state.tasks.map((task) => {
-            if (task.id === action.payload.id) {
-              return {
-                ...task,
-                ...action.payload
-              }
-            }
-            return task
-          })
-      }
     case MOVE_TASK:
       const {source, destination} = action.payload
       let sameCol = false
@@ -119,16 +86,19 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       }
 
       // Copy source col and remove task from column
-      const sourceColTasks: Task[]  = [...state.testTasks![source.columnId]]
+      const sourceColTasks: Task[]  = [...state.tasks![source.columnId]]
       const task: Task = sourceColTasks.splice(source.index, 1)[0]
 
       // copy destination col
-      const destColTasks: Task[] = [...state.testTasks![destination.columnId]]
+      const destColTasks: Task[] = [...state.tasks![destination.columnId]]
       // calculate new value for this task's order
       let newPos: number
 
       // check where task was dropped
-      if (destination.index === 0) {
+      if (destColTasks.length === 0) {
+        newPos = 20
+      } 
+      else if (destination.index === 0) {
         // dropped at top
         newPos = destColTasks[destination.index].relativeOrder - 10
       } else if (destination.index === destColTasks.length) {
@@ -143,6 +113,8 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       }
       task.relativeOrder = newPos
       task.columnId = destination.columnId
+      // this is a shit mix because of weird component rendering in react-dnd-beautiful
+      task.loadedOnBoard = true
 
       if (sameCol) {
         destColTasks.splice(source.index, 1)
@@ -153,15 +125,11 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
         0,
         task
       )
-      
-      console.log('FINAL!')
-      console.log(sourceColTasks)
-      console.log(destColTasks)
 
       return {
         ...state,
-        testTasks: {
-          ...state.testTasks,
+        tasks: {
+          ...state.tasks,
           [source.columnId]: sourceColTasks,
           [destination.columnId]: destColTasks
         }
