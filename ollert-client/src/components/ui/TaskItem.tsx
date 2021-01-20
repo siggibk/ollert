@@ -1,11 +1,11 @@
 import { Card, CardContent } from '@material-ui/core'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Draggable } from 'react-beautiful-dnd'
 import { useDispatch } from 'react-redux'
 import taskRepository from '../../api/taskRepository'
 import { updateTask } from '../../store/board/actions'
 import { Task, UpdateTask } from '../../store/board/types'
-
+import { useFirstRender } from '../../helpers/render'
 
 type TaskItemProps = {
   task: Task,
@@ -13,31 +13,42 @@ type TaskItemProps = {
 }
 
 export const TaskItem = ({task, index}: TaskItemProps) => {
-  /* const dispatch = useDispatch()
+  const { columnId, relativeOrder } = task
+  const isFirstRender = useFirstRender()
+
+  const dispatch = useDispatch()
 
   // update task order
   const updateTaskOrder = async () => {
-    console.log(`${task.name} is ${index}`)
+    console.log(`${task.name} has new ${relativeOrder}`)
+    console.log(`or column ${columnId}`)
 
     const taskDto: UpdateTask = {
-      relativeOrder: index
+      relativeOrder: relativeOrder,
+      columnId: columnId
     }
-    // update state
-    dispatch(updateTask({...taskDto, id: task.id}))
 
+    console.log('Something updated!')
+
+    // update state
+   //  dispatch(updateTask({...taskDto, id: task.id}))
+/* 
     try {
       await taskRepository.patch(task.id, taskDto)
     } catch (e) {
       // failed to update
       console.log('Failed to update task order')
-    }
+    } */
   }
 
   // Find a better order solution  
   useEffect(() => {
-    updateTaskOrder()
-  }, [index])
- */
+    if (!isFirstRender) {
+      updateTaskOrder()
+    }
+  }, [columnId, relativeOrder])
+
+
   return (
     <Draggable draggableId={task.id} index={index}>
       {(provided) => (

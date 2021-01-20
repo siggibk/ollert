@@ -32,7 +32,7 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
 
       const flatTasks: ColumnnTask = {}
       columns.forEach((col) => (
-        flatTasks[col.id] = col.tasks
+        flatTasks[col.id] = col.tasks.sort((a,b) => a.relativeOrder - b.relativeOrder)
       ))
 
       /* const flatTasks: ColumnnTask = columns.map((col) => (
@@ -50,7 +50,8 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       if (!state.currentBoard) {
         throw new Error("Current board is null, cannot add task: reducers.ts");
       }
-
+      // position should be at the bottom!
+      const posValue = 100
       return {
         ...state,
         tasks: [...state.tasks, action.payload],
@@ -111,7 +112,7 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
           })
       }
     case MOVE_TASK:
-      const {taskId, source, destination} = action.payload
+      const {source, destination} = action.payload
       let sameCol = false
       if (source.columnId === destination.columnId) {
         sameCol = true
@@ -119,32 +120,29 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
 
       // Copy source col and remove task from column
       const sourceColTasks: Task[]  = [...state.testTasks![source.columnId]]
-      console.log('Source tasks')
-      console.log(sourceColTasks)
       const task: Task = sourceColTasks.splice(source.index, 1)[0]
-      console.log('..')
-      console.log('After removing task')
-      console.log(sourceColTasks)
-      console.log('...')
-      console.log('task!')
-      console.log(task)
 
       // copy destination col
       const destColTasks: Task[] = [...state.testTasks![destination.columnId]]
       // calculate new value for this task's order
       let newPos: number
 
+      // check where task was dropped
       if (destination.index === 0) {
+        // dropped at top
         newPos = destColTasks[destination.index].relativeOrder - 10
-      } else if (destination.index === destColTasks.length - 2) {
-        newPos = destColTasks[destination.index].relativeOrder + 10
+      } else if (destination.index === destColTasks.length) {
+        // dropped at bottom
+        newPos = destColTasks[destination.index - 1].relativeOrder + 10
       } else {
+        // dropped between tasks
         newPos = (
           destColTasks[destination.index].relativeOrder +
           destColTasks[destination.index-1].relativeOrder
         )/ 2
       }
       task.relativeOrder = newPos
+      task.columnId = destination.columnId
 
       if (sameCol) {
         destColTasks.splice(source.index, 1)

@@ -84,7 +84,6 @@ export interface MoveTaskColumnInfo {
   columnId: string
 }
 export interface MoveTask {
-  taskId: string,
   source: MoveTaskColumnInfo,
   destination: MoveTaskColumnInfo
 }

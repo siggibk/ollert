@@ -60,24 +60,6 @@ export const BoardDetailPage = () => {
     (state: RootState) => state.board.currentBoard
   )
 
-  // gets called when task has been dragged somewhere
- /*  {
-    "draggableId": "1aa21108-1eda-4f1b-9af3-22e514e8257b",
-    "type": "DEFAULT",
-    "source": {
-      "index": 0,
-      "droppableId": "af1a97e3-ca4b-4bc3-98a2-1e6132840789"
-    },
-    "reason": "DROP",
-    "mode": "FLUID",
-    "destination": {
-      "droppableId": "3b34de88-f187-4cdd-88a6-820e7463b8bc",
-      "index": 0
-    },
-    "combine": null
-  } */
-
-  // TODO not any: Define interfaces as DraggableResult
   const onDragEnd = async (result: any) => {
     console.log(result)
     const {draggableId, source, destination} = result
@@ -91,7 +73,6 @@ export const BoardDetailPage = () => {
     }
 
     const moveTaskObj: MoveTask = {
-      taskId: draggableId,
       source: {
         index: source.index,
         columnId: source.droppableId
@@ -103,31 +84,6 @@ export const BoardDetailPage = () => {
     }
     dispatch(moveTask(moveTaskObj))
 
-    /*
-
-    columns: [1,2,3]
-    tasks: {
-      1: [{rlPos: 1}, {rlPos: 4}],
-      2: [{rlPos}]
-    }
-    const moveTask: MoveTask = {
-      taskId: droppableId,
-      source: {
-        index: 1,
-        columnId: 1
-      },
-      destination: {
-        index: 2,
-        columnId: 3
-      }
-    }
-
-    tasks[col].filter()
-    */
-    // remove [source.index] from source column
-    // insert draggableId into [destination.index]
-    // get destination[destIndex-1].relativePos + destination[destIndex+1] / 2
-    
     // update state before doing the API call for better ui responsiveness
     /* dispatch(updateTask({...taskDto, id: draggableId}))
 
