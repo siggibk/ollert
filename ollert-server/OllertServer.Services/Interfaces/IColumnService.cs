@@ -14,5 +14,6 @@ namespace OllertServer.Services.Interfaces
         t.Task<ColumnDetailDto> GetSingle(Guid id);
         t.Task<ColumnDetailDto> Create(ColumnInputModel input);
         t.Task Update(Guid id, ColumnUpdateDto input);
+        t.Task Delete(Guid id);
     }
 }

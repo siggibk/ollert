@@ -50,6 +50,14 @@ namespace OllertServer.WebApi.Controllers
         {
             return Ok(await _boardService.GetSingle(id));
         }
+
+        [Authorize]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _boardService.Delete(id);
+            return NoContent();
+        }
     }
 }
 

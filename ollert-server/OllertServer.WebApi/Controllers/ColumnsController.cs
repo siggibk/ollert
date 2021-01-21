@@ -46,5 +46,13 @@ namespace OllertServer.WebApi.Controllers
             await _columnService.Update(id, input);
             return NoContent();
         }
+
+        [Authorize]
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            await _columnService.Delete(id);
+            return NoContent();
+        }
     }
 }

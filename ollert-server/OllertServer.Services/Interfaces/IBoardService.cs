@@ -14,5 +14,6 @@ namespace OllertServer.Services.Interfaces
         t.Task<BoardDetailDto> GetSingle(Guid id);
         t.Task<BoardDetailDto> Create(string userEmail, BoardInputModel input);
         t.Task Update(Guid id, BoardUpdateDto input);
+        t.Task Delete(Guid id);
     }
 }

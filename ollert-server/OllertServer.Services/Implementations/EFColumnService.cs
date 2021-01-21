@@ -61,5 +61,16 @@ namespace OllertServer.Services.Implementations
             _context.Update(column);
             await _context.SaveChangesAsync();
         }
+
+        public async t.Task Delete(Guid id)
+        {
+            var column = await _context.Columns
+                .Where(t => t.Id == id)
+
+                .SingleOrDefaultAsync();
+
+            _context.Remove(column);
+            await _context.SaveChangesAsync();
+        }
     }
 }

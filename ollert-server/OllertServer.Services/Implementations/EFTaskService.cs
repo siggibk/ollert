@@ -55,5 +55,15 @@ namespace OllertServer.Services.Implementations
             _context.Update(task);
             await _context.SaveChangesAsync();
         }
+
+        public async t.Task Delete(Guid id)
+        {
+            var task = await _context.Tasks
+                .Where(t => t.Id == id)
+                .SingleOrDefaultAsync();
+
+            _context.Remove(task);
+            await _context.SaveChangesAsync();
+        }
     }
 }

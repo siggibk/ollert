@@ -12,5 +12,6 @@ namespace OllertServer.Services.Interfaces
         t.Task<TaskDto> GetSingle(Guid id);
         t.Task<TaskDto> Create(TaskInputModel input);
         t.Task Update(Guid id, TaskUpdateDto input);
+        t.Task Delete(Guid id);
     }
 }
