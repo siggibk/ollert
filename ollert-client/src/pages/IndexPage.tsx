@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Container } from '@material-ui/core'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../store'
@@ -25,13 +25,13 @@ export const IndexPage = () => {
     }
   }
 
+  useEffect(() => {
+    fetchBoards()
+  }, [])
+
   return (
     <Container>
-      <h1>Index page</h1>
-      <Button variant="contained" color="secondary" onClick={fetchBoards}>Fetch boards!</Button>
-      <h2>Boards length</h2>
-      {boards.length}
-      <h2>All boards</h2>
+      <h1>Your boards</h1>
       <BoardList boards={boards} />
     </Container>
   )

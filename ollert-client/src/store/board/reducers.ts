@@ -1,9 +1,9 @@
 import taskRepository from "../../api/taskRepository";
 import { setCurrentBoard } from "./actions";
-import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD, UPDATE_COLUMN, Task, UPDATE_TASK, MOVE_TASK, ColumnnTask } from "./types";
+import { BoardState, BoardActionTypes, ADD_TASK, ADD_COLUMN, SET_CURRENT_BOARD, ADD_BOARDS, ADD_BOARD, UPDATE_COLUMN, Task, UPDATE_TASK, MOVE_TASK, ColumnnTask, DELETE_TASK, DELETE_COLUMN, DELETE_BOARD } from "./types";
 
 // TODO make state flatter
-// some duplicates going on inside currentBoard
+// some duplicates going on inside currentBoard and columns
 const initialState: BoardState = {
   boards: [],
   currentBoard: null,
@@ -53,30 +53,28 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
     case ADD_COLUMN:
       return {
         ...state,
-        currentBoard: {
-          ...state.currentBoard!,
-          columns: [
-            ...state.currentBoard!.columns,
-            action.payload
-          ]
+        columns: [
+          ...state.columns,
+          action.payload
+        ],
+        tasks: {
+          ...state.tasks,
+          [action.payload.id]: []
         }
       }
     case UPDATE_COLUMN:
       return {
         ...state,
-        currentBoard: {
-          ...state.currentBoard!,
-          columns:
-            state.currentBoard!.columns.map((col) => {
-              if (col.id === action.payload.id) {
-                return {
-                  ...col,
-                  ...action.payload
-                }
+        columns:
+          state.columns.map((col) => {
+            if (col.id === action.payload.id) {
+              return {
+                ...col,
+                ...action.payload
               }
-              return col
-            })
-        }
+            }
+            return col
+          })
       }
     case MOVE_TASK:
       const {source, destination} = action.payload
@@ -133,6 +131,27 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
           [source.columnId]: sourceColTasks,
           [destination.columnId]: destColTasks
         }
+      }
+    case DELETE_TASK:
+      const colId = action.payload.columnId
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [colId]:
+            state.tasks![colId].filter((col) => (col.id !== action.payload.id))
+        }
+      }
+    case DELETE_COLUMN:
+      return {
+        ...state,
+        columns:
+          state.columns.filter((col) => col.id !== action.payload.id),
+      }
+    case DELETE_BOARD:
+      return {
+        ...state,
+        boards: state.boards.filter((board) => board.id !== action.payload.id)
       }
     default:
       return state

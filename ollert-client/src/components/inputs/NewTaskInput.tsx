@@ -10,10 +10,7 @@ export const NewTaskInput = ({onSubmit}: Props) => {
   const [name, setName] = useState<string>('')
 
   const handleAddTask = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(`Received event ${e.key}`)
     if (e.key === 'Enter') {
-      console.log("Enter was clicked")
-
       const task: NewTask = {
         name: name
       }
@@ -25,8 +22,10 @@ export const NewTaskInput = ({onSubmit}: Props) => {
   return (
     <div>
       <TextField
+        variant="outlined"
         type="text"
-        placeholder="Do laundry"
+        label="New task"
+        size="small"
         onChange={(e) => setName(e.target.value)}
         onKeyPress={handleAddTask}
         value={name}

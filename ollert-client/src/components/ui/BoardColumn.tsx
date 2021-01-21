@@ -1,15 +1,16 @@
-import React, { useState } from "react"
-import { Card, CardContent, Divider, makeStyles, TextField, Typography } from "@material-ui/core"
+import React, { useRef, useState } from "react"
+import { Card, CardContent, Divider, makeStyles, Menu, MenuItem, TextField, Typography } from "@material-ui/core"
 import { useDispatch, useSelector } from "react-redux"
-import { ColumnDetail, NewTask, Task, UpdateColumn } from "../../store/board/types"
+import { ColumnDetail, DeleteColumn, NewTask, Task, UpdateColumn } from "../../store/board/types"
 import { NewTaskInput } from "../inputs/NewTaskInput"
 import { TaskItem } from "./TaskItem"
-import { addTask, updateColumn } from "../../store/board/actions"
+import { addTask, deleteColumn, updateColumn } from "../../store/board/actions"
 
 import taskRepository from '../../api/taskRepository'
 import columnRepository from '../../api/columnRepository'
 import { Droppable } from "react-beautiful-dnd"
 import { RootState } from "../../store"
+import { DeleteOutline, MoreHorizOutlined } from "@material-ui/icons"
 
 
 interface Props {
@@ -22,6 +23,13 @@ const styles = makeStyles({
   },
   droppable: {
     minHeight: '3rem'
+  },
+  newTask: {
+    marginTop: '1rem'
+  },
+  top: {
+    display: 'flex',
+    justifyContent: 'space-between'
   }
 })
 
@@ -29,13 +37,24 @@ export const BoardColumn = ({column} : Props) => {
   const classes = styles()
   const [nameEditActive, setNameEditActive] = useState<boolean>(false)
   const [newName, setNewName] = useState<string>('')
-  
+  const [actionMenuOpen, setActionMenuOpen] = useState<boolean>(false)
+  const [actionAnchorEl, setActionAnchorEl] = useState(null)
+
   // tasks for this column
   const tasks: Task[] = useSelector(
     (state: RootState) => state.board.tasks![column.id]
   )
 
   const dispatch = useDispatch()
+
+  const handleDelete = async () => {
+    const deletePayload: DeleteColumn = {
+      id: column.id
+    }
+    
+    await columnRepository.delete(column.id)
+    dispatch(deleteColumn(deletePayload))
+  }
 
   const createNewTask = async (task: NewTask) => {
     // set new tasks position
@@ -81,6 +100,11 @@ export const BoardColumn = ({column} : Props) => {
     setNameEditActive(false)
   }
 
+  const handleActionClick = (e: any) => {
+    setActionAnchorEl(e.currentTarget)
+    setActionMenuOpen(true)
+  }
+
   const onNameBlur = async () => {
     if (newName !== column.name) {
       await updateName()
@@ -117,7 +141,9 @@ export const BoardColumn = ({column} : Props) => {
   const columnName = () => {
     return (
       <div onClick={handleSetNameEditActive}>
-        <span>{column.name} ({tasks.length} tasks)</span>
+        <Typography variant="h6" component="h2" gutterBottom>
+          {column.name}
+        </Typography>
         <Divider />
       </div>
     )
@@ -130,11 +156,24 @@ export const BoardColumn = ({column} : Props) => {
       </Typography>
     )
   }
-
   return (
     <Card className="column" style={{overflow: 'auto'}}>
       <CardContent className={classes.content}>
         <div className="column-title">
+          <div className={classes.top}>
+          <Typography color="textSecondary" gutterBottom>
+            {tasks.length} tasks
+          </Typography>
+          <MoreHorizOutlined onClick={handleActionClick} color="action" />
+          <Menu
+            keepMounted
+            anchorEl={actionAnchorEl}
+            open={actionMenuOpen}
+            onClose={() => setActionMenuOpen(false)}
+          >
+            <MenuItem onClick={handleDelete}>Delete column</MenuItem>
+          </Menu>
+          </div>
           {!column.name || nameEditActive ? nameInput() : columnName()}
         </div>
         <Droppable droppableId={column.id}>
@@ -148,7 +187,7 @@ export const BoardColumn = ({column} : Props) => {
           </div>
           }
         </Droppable>
-        <div className="new-task">
+        <div className={classes.newTask}>
           <NewTaskInput onSubmit={createNewTask} />
         </div>
       </CardContent>

@@ -6,7 +6,7 @@ export default {
   create(payload: NewTask) : Promise<any> {
     return client.post('tasks', payload)
   },
-  del(id: string) : Promise<any> {
+  delete(id: string) : Promise<any> {
     return client.delete(`tasks/${id}/`)
   },
   patch(id:string, payload: UpdateTask): Promise<any> {

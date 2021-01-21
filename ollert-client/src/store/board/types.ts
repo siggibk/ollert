@@ -8,6 +8,7 @@ export const ADD_BOARD = 'ADD_BOARD'
 export const UPDATE_COLUMN = 'UPDATE_COLUMN'
 export const UPDATE_TASK = 'UPDATE_TASK'
 export const MOVE_TASK = 'MOVE_TASK'
+export const DELETE_BOARD = 'DELETE_BOARD'
 
 // Board state interface
 export interface BoardState {
@@ -35,6 +36,19 @@ export interface UpdateColumn {
   name?: string
   // only for reducer to help update the global state
   id?: string
+}
+
+export interface DeleteTask {
+  id: string,
+  columnId: string
+}
+
+export interface DeleteColumn {
+  id: string
+}
+
+export interface DeleteBoard {
+  id: string
 }
 
 export interface NewTask {
@@ -130,7 +144,23 @@ interface MoveTaskAction {
   payload: MoveTask
 }
 
+interface DeleteTaskAction {
+  type: typeof DELETE_TASK,
+  payload: DeleteTask
+}
+
+interface DeleteColumnAction {
+  type: typeof DELETE_COLUMN,
+  payload: DeleteColumn
+}
+
+interface DeleteBoardAction {
+  type: typeof DELETE_BOARD,
+  payload: DeleteBoard
+}
+
 export type BoardActionTypes = (
   AddTaskAction | AddColumnAction | SetCurrentBoardAction | AddBoardsAction |
-  AddBoardAction | UpdateColumnAction | UpdateTaskAction | MoveTaskAction
+  AddBoardAction | UpdateColumnAction | UpdateTaskAction | MoveTaskAction |
+  DeleteTaskAction | DeleteColumnAction | DeleteBoardAction
 )

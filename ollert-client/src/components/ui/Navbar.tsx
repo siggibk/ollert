@@ -4,6 +4,7 @@ import { LoginDialog } from '../dialogs/LoginDialog'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store'
 import { User } from '../../store/user/types'
+import { Link } from 'react-router-dom'
 
 export const Navbar = () => {
   const [loginOpen, setLoginOpen] = useState(false)
@@ -23,8 +24,9 @@ export const Navbar = () => {
   return (
     <div className="navbar">
       <div className="navbar-left">
-        {user?.email}
-        {loggedIn ? <span>Loggedin</span> : <span>Not loggedIn</span>}
+        <Link to=''>
+          <Button color="primary" size="large">Ollert</Button>
+        </Link>
       </div>
       <div className="navbar-right">
         <Button onClick={() => setLoginOpen(true)} variant="contained" color="primary">Login</Button>

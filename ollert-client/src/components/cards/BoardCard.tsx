@@ -9,7 +9,8 @@ interface Props {
 const styles = makeStyles({
   root: {
     width: 250,
-    marginRight: '2rem'
+    marginRight: '2rem',
+    marginBottom: '2rem'
   }
 })
 

@@ -25,6 +25,14 @@ export const BoardDetailPage = () => {
   let { id } = useParams<Params>()
   const dispatch = useDispatch()
 
+  const currentBoard: BoardDetail | null = useSelector(
+    (state: RootState) => state.board.currentBoard
+  )
+
+  const columns: ColumnDetail[] = useSelector(
+    (state: RootState) => state.board.columns
+  )
+
   // useEffect hook is called once on load and then when [deps] -> id changes
   useEffect(() => {
     const getDetails = async () => {
@@ -56,10 +64,6 @@ export const BoardDetailPage = () => {
     }
   }
 
-  const currentBoard: BoardDetail | null = useSelector(
-    (state: RootState) => state.board.currentBoard
-  )
-
   const onDragEnd = async (result: any) => {
     console.log(result)
     const {draggableId, source, destination} = result
@@ -83,20 +87,6 @@ export const BoardDetailPage = () => {
       }
     }
     dispatch(moveTask(moveTaskObj))
-
-    // update state before doing the API call for better ui responsiveness
-    /* dispatch(updateTask({...taskDto, id: draggableId}))
-
-    try {
-      // update task column
-      await taskRepository.patch(draggableId, taskDto)
-    } catch (e) {
-      // Update failed, reverse change in state
-      taskDto.columnId = source.droppableId
-      dispatch(updateTask({...taskDto, id: draggableId}))
-      console.log('Failed to update task after dnd')
-      console.log(e)
-    } */
   }
 
   return (
@@ -104,7 +94,7 @@ export const BoardDetailPage = () => {
       <h1>{currentBoard?.name}</h1>
       <div className="columns">
         <DragDropContext onDragEnd={onDragEnd}>
-          {currentBoard?.columns.map((column: ColumnDetail) => (
+          {columns.map((column: ColumnDetail) => (
             <BoardColumn key={column.id} column={column} />
           ))}
         </DragDropContext>

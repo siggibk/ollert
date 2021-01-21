@@ -9,7 +9,7 @@ export default {
   getDetails(id: string) : Promise<any> {
     return client.get(`columns/${id}/`)
   },
-  del(id: string) : Promise<any> {
+  delete(id: string) : Promise<any> {
     return client.delete(`columns/${id}/`)
   },
   patch(id:string, payload: UpdateColumn) {

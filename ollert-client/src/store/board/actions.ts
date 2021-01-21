@@ -1,4 +1,4 @@
-import { ADD_BOARD, ADD_BOARDS, ADD_COLUMN, ADD_TASK, Board, BoardActionTypes, BoardDetail, ColumnDetail, MoveTask, MOVE_TASK, SET_CURRENT_BOARD, Task, UpdateColumn, UpdateTask, UPDATE_COLUMN, UPDATE_TASK } from "./types";
+import { ADD_BOARD, ADD_BOARDS, ADD_COLUMN, ADD_TASK, Board, BoardActionTypes, BoardDetail, ColumnDetail, DeleteBoard, DeleteColumn, DeleteTask, DELETE_BOARD, DELETE_COLUMN, DELETE_TASK, MoveTask, MOVE_TASK, SET_CURRENT_BOARD, Task, UpdateColumn, UpdateTask, UPDATE_COLUMN, UPDATE_TASK } from "./types";
 
 // These action methods get called after the API responds
 export const addBoards = (payload: Board[]) : BoardActionTypes => {
@@ -53,6 +53,27 @@ export const updateTask = (payload: UpdateTask): BoardActionTypes => {
 export const moveTask = (payload: MoveTask): BoardActionTypes => {
   return {
     type: MOVE_TASK,
+    payload: payload
+  }
+}
+
+export const deleteTask = (payload: DeleteTask): BoardActionTypes => {
+  return {
+    type: DELETE_TASK,
+    payload: payload
+  }
+}
+
+export const deleteColumn = (payload: DeleteColumn): BoardActionTypes => {
+  return {
+    type: DELETE_COLUMN,
+    payload: payload
+  }
+}
+
+export const deleteBoard = (payload: DeleteBoard): BoardActionTypes => {
+  return {
+    type: DELETE_BOARD,
     payload: payload
   }
 }

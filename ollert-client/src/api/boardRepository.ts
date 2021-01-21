@@ -12,7 +12,7 @@ export default {
   getAll() : Promise<any> {
     return client.get('boards/')
   },
-  del(id: string) : Promise<any> {
+  delete(id: string) : Promise<any> {
     return client.delete(`boards${id}/`)
   }
 }
