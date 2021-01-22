@@ -13,6 +13,6 @@ export default {
     return client.get('boards/')
   },
   delete(id: string) : Promise<any> {
-    return client.delete(`boards${id}/`)
+    return client.delete(`boards/${id}/`)
   }
 }

@@ -37,6 +37,7 @@ namespace OllertServer.Services.Implementations
 
             var boards = await _context.Boards
                 .Where(b => b.UserId == user.Id)
+                .OrderByDescending(b => b.CreatedAt)
                 .ProjectTo<BoardDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
             return boards;

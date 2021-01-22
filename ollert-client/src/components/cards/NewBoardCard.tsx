@@ -1,10 +1,5 @@
-import { Button, Card, CardActions, CardContent, makeStyles, Typography } from "@material-ui/core";
-import { Link } from "react-router-dom";
-import { Board } from "../../store/board/types";
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import { AddBox, AddCircleOutlineOutlined, AddOutlined } from "@material-ui/icons";
-import { useState } from "react";
-import { NewBoardDialog } from "../dialogs/NewBoardDialog";
+import { Card, CardContent, makeStyles, Typography } from "@material-ui/core";
+import { AddBox } from "@material-ui/icons";
 
 interface Props {
   onClick: () => void

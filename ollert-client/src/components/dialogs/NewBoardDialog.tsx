@@ -29,7 +29,7 @@ export const NewBoardDialog = ({isOpen, onClose}: Props) => {
   }
 
   return (
-    <Dialog open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title">
+    <Dialog fullWidth={true} maxWidth="sm" open={isOpen} onClose={onClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">New board</DialogTitle>
         <DialogContent>
           <TextField

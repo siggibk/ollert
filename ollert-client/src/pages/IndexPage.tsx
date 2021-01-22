@@ -15,6 +15,10 @@ export const IndexPage = () => {
     (state: RootState) => state.board.boards
   )
 
+  const loggedIn: Boolean = useSelector(
+    (state: RootState) => state.user.loggedIn
+  )
+
   const fetchBoards = async () => {
     try {
       const { data } = await BoardRepository.getAll()
@@ -26,13 +30,21 @@ export const IndexPage = () => {
   }
 
   useEffect(() => {
-    fetchBoards()
-  }, [])
+    if (loggedIn) {
+      fetchBoards()
+    }
+  }, [loggedIn])
 
   return (
     <Container>
-      <h1>Your boards</h1>
-      <BoardList boards={boards} />
+      {loggedIn ? (
+        <div>
+          <h1>Your boards</h1>
+          <BoardList boards={boards} />
+        </div>
+      )
+      : <h1>Log in or Register</h1>
+    }
     </Container>
   )
 }

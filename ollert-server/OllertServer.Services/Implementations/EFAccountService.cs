@@ -5,6 +5,8 @@ using System.Linq;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -20,17 +22,29 @@ namespace OllertServer.Services.Implementations
     {
         private SignInManager<ApplicationUser> _signInManager { get; }
         private UserManager<ApplicationUser> _userManager { get; }
+        private IMapper _mapper { get; }
         private IConfiguration _configuration { get; }
 
         public EFAccountService(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
+            IMapper mapper,
             IConfiguration configuration
         )
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _mapper = mapper;
             _configuration = configuration;
+        }
+
+        public ApplicationUserDto GetUser(string email)
+        {
+            var user = _userManager.Users
+                .Where(u => u.Email == email)
+                .ProjectTo<ApplicationUserDto>(_mapper.ConfigurationProvider)
+                .Single();
+            return user;
         }
 
         public async Task<JwtTokenDto> Login(LoginInputModel userInput)
@@ -50,8 +64,8 @@ namespace OllertServer.Services.Implementations
                     Access = await GenerateToken(user)
                 };
             }
-            // TODO raise failed login exception
-            throw new Exception();
+            // TODO create exceptions and exception handler
+            return null;
         }
 
         public async Task<JwtTokenDto> Register(RegisterInputModel userInput)
@@ -80,9 +94,8 @@ namespace OllertServer.Services.Implementations
                     Access = await GenerateToken(userObject)
                 };
             }
-
-            // TODO custom exception
-            throw new Exception();
+            // TODO create exceptions and exception handler
+            return null;
         }
 
         public async Task<string> GenerateToken(ApplicationUser user)

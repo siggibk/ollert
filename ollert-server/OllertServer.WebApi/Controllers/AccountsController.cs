@@ -23,16 +23,39 @@ namespace OllertServer.WebApi.Controllers
             _accountService = accountService;
         }
 
+        [HttpGet("me")]
+        public IActionResult GetCurrentUser()
+        {
+            var currUserEmail = this.User.FindFirst("sub")?.Value;
+            return Ok(_accountService.GetUser(currUserEmail));
+        }
+
         [HttpPost("token")]
         public async Task<IActionResult> GetToken([FromBody] LoginInputModel userInput)
         {
-            return Ok(await _accountService.Login(userInput));
+            // TODO login method should throw exception that gets handled instead of this
+            var token = await _accountService.Login(userInput);
+
+            if (token != null)
+            {
+                return Ok(token);
+            }
+
+            return Unauthorized();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterInputModel userInput)
         {
-            return Ok(await _accountService.Register(userInput));
+            var token = await _accountService.Register(userInput);
+
+            // TODO register method should throw exception that gets handled instead of this
+            if (token != null)
+            {
+                return Ok(token);
+            }
+
+            return Unauthorized();
         }
     }
 }

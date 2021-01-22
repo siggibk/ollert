@@ -1,4 +1,3 @@
-// import { TypedUseSelectorHook, useSelector } from 'react-redux'
 import { UserState, AuthActionTypes, SET_USER } from './types'
 
 const initialState: UserState = {
@@ -12,11 +11,9 @@ export function userReducer(state = initialState, action: AuthActionTypes) : Use
       return {
         ...state,
         user: action.payload,
+        loggedIn: true
       }
     default:
       return state
   }
 }
-
-// used by components to access user state properties
-// export const userSelector: TypedUseSelectorHook<UserState> = useSelector

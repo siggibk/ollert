@@ -25,8 +25,15 @@ export function boardReducer(state = initialState, action: BoardActionTypes): Bo
       } */
       return state
     case SET_CURRENT_BOARD:
-      const columns = action.payload.columns
+      let columns = action.payload.columns
       const flatTasks: ColumnnTask = {}
+      columns.sort((a, b) => {
+        if (new Date(a.createdAt) < new Date(b.createdAt)) {
+          return -1
+        }
+        return 1
+      })
+
       columns.forEach((col) => (
         flatTasks[col.id] = col.tasks.sort((a,b) => a.relativeOrder - b.relativeOrder)
       ))

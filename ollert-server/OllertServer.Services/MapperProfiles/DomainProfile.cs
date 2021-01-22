@@ -11,6 +11,7 @@ namespace OllertServer.Services.MapperProfiles
     {
         public DomainProfile()
         {
+            CreateMap<ApplicationUser, ApplicationUserDto>();
             CreateMap<Board, BoardDto>();
             CreateMap<Board, BoardDetailDto>();
             CreateMap<Column, ColumnDto>();

@@ -1,5 +1,9 @@
-export const LOGIN = 'LOGIN'
 export const SET_USER = 'SET_USER'
+
+export interface UserState {
+  loggedIn: boolean,
+  user: User | null
+}
 
 export interface User {
   id: string,
@@ -16,20 +20,9 @@ export interface Register {
   password: string
 }
 
-export interface UserState {
-  loggedIn: boolean,
-  user: User | null
-}
-
-interface LoginAction {
-  type: typeof LOGIN,
-  payload: Login
-}
-
 interface SetUserAction {
   type: typeof SET_USER,
   payload: User
 }
 
-export type AuthActionTypes = LoginAction | SetUserAction
-// LoginAction | RegisterAction
+export type AuthActionTypes = SetUserAction

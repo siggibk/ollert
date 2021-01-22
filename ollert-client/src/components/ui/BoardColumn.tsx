@@ -30,6 +30,11 @@ const styles = makeStyles({
   top: {
     display: 'flex',
     justifyContent: 'space-between'
+  },
+  actionIcon: {
+    '&:hover': {
+      cursor: 'pointer'
+     },
   }
 })
 
@@ -164,7 +169,7 @@ export const BoardColumn = ({column} : Props) => {
           <Typography color="textSecondary" gutterBottom>
             {tasks.length} tasks
           </Typography>
-          <MoreHorizOutlined onClick={handleActionClick} color="action" />
+          <MoreHorizOutlined className={classes.actionIcon} onClick={handleActionClick} color="action" />
           <Menu
             keepMounted
             anchorEl={actionAnchorEl}

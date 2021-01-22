@@ -1,5 +1,8 @@
 import React, { useState } from 'react'
 import { Button, Dialog, DialogTitle, DialogActions, TextField, DialogContent } from '@material-ui/core'
+import authRepository from '../../api/authRepository'
+import { Login } from '../../store/user/types'
+import { useHistory } from 'react-router-dom'
 
 type LoginDialogProps = {
   loginOpen: boolean,
@@ -10,10 +13,18 @@ type LoginDialogProps = {
 export const LoginDialog = ({loginOpen = false, onClose} : LoginDialogProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  
-  const onLogin = () => {
+  const history = useHistory()
+
+  const onLogin = async () => {
     console.log(`Login: ${email} - ${password}`)
-    // if success then call onLoginSuccess
+    const payload: Login = {
+      email: email,
+      password: password
+    }
+
+    const { data } = await authRepository.login(payload)
+    localStorage.setItem('jwt-tkn', data.access)
+    history.go(0)
   }
 
   return (
