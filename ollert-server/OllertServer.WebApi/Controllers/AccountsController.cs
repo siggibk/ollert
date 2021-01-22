@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 using OllertServer.Services.Interfaces;
 using OllertServer.Models.InputModels;
@@ -23,6 +24,7 @@ namespace OllertServer.WebApi.Controllers
             _accountService = accountService;
         }
 
+        [Authorize]
         [HttpGet("me")]
         public IActionResult GetCurrentUser()
         {
