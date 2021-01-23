@@ -12,6 +12,14 @@ Mini Trello clone for learning purposes and is not complete using:
 
 ![Ollert](https://media.giphy.com/media/JXYW8WgyG6t7Q9bBoR/giphy.gif)
 
+# To be done
+
+- Roles and resource authorization
+- Flatten redux state
+- Add users to board
+- Assign users to tasks
+- Board templates
+
 ## Run it locally
 
 Database
