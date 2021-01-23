@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, Dialog, DialogTitle, DialogActions, TextField, DialogContent } from '@material-ui/core'
 import authRepository from '../../api/authRepository'
-import { Login } from '../../store/user/types'
+import { Login, Register } from '../../store/user/types'
 import { useHistory } from 'react-router-dom'
 
 type LoginDialogProps = {
@@ -13,10 +13,11 @@ type LoginDialogProps = {
 export const LoginDialog = ({loginOpen = false, onClose} : LoginDialogProps) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isRegister, setIsRegister] = useState(false)
+
   const history = useHistory()
 
   const onLogin = async () => {
-    console.log(`Login: ${email} - ${password}`)
     const payload: Login = {
       email: email,
       password: password
@@ -27,9 +28,20 @@ export const LoginDialog = ({loginOpen = false, onClose} : LoginDialogProps) => 
     history.go(0)
   }
 
+  const onRegister = async () => {
+    const payload: Register = {
+      email: email,
+      password: password
+    }
+
+    const { data } = await authRepository.register(payload)
+    localStorage.setItem('jwt-tkn', data.access)
+    history.go(0)
+  }
+
   return (
     <Dialog open={loginOpen} onClose={onClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Login</DialogTitle>
+        <DialogTitle id="form-dialog-title">{isRegister ? 'Register' : 'Login'}</DialogTitle>
         <DialogContent>
           <TextField
             onChange={(e) => setEmail(e.target.value)}
@@ -50,8 +62,11 @@ export const LoginDialog = ({loginOpen = false, onClose} : LoginDialogProps) => 
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onLogin} color="primary">
-            Login
+          <Button size="small" onClick={() => setIsRegister(!isRegister)} color="secondary">
+            {isRegister ? 'Already have an account? Login' : 'Dont have an account? Register'}
+          </Button>
+          <Button onClick={() => isRegister ? onRegister() : onLogin()} color="primary">
+            {isRegister ? 'Register' : 'Login'}
           </Button>
         </DialogActions>
       </Dialog>
